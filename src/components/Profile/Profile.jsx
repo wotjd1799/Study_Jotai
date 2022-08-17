@@ -1,40 +1,81 @@
-import React from "react";
+import { atom, useAtom, useSetAtom } from "jotai";
+import { useAtomValue, useUpdateAtom } from "jotai/utils";
+import { useState } from "react";
+import { useLayoutEffect } from "react";
+import { changeCount, changeDataAtom, setApiDataAtom } from "store";
 import * as S from "./styled";
-import { atom, useAtom } from "jotai";
-import { useUpdateAtom, useAtomValue } from "jotai/utils";
-import { useEffect } from "react";
-import { profileAtom, changeCount } from "store";
 
 const editToggleAtom = atom(false);
 
 const Profile = () => {
   const [editToggle, setEditToggle] = useAtom(editToggleAtom);
+
   const getCount = useAtomValue(changeCount);
   const setCount = useUpdateAtom(changeCount);
-  
-  const { name, description } = useAtomValue(profileAtom);
 
-  useEffect(() => {
+  const [profileData, changeData] = useAtom(changeDataAtom);
+
+  const [apiData, setApiData] = useAtom(setApiDataAtom);
+  const [apiDataState, setDataState] = useState(apiData);
+
+  useLayoutEffect(() => {
     if (editToggle === false) {
       setCount((count) => count + 1);
     }
   }, [editToggle, setCount]);
-  
-  
+
+  const toggleEdit = () => {
+    setApiData(apiDataState);
+    setEditToggle((toggle) => !toggle);
+  };
+
+  const changeInput = (e) => {
+    if (e) {
+      const data = {
+        targetName: e.target.name,
+        data: e.target.value,
+      };
+
+      changeData(data);
+    }
+  };
+
+  const setInput = (e) => {
+    if (e) {
+      setDataState(e.target.value);
+    }
+  };
 
   return (
     <S.Container>
       <S.FlexBox>
-        <S.Name value={name} readOnly={editToggle ? "" : "readOnly"}/>
+        <S.Text>Title: </S.Text>
+        <S.Name
+          name="name"
+          value={profileData.name}
+          readOnly={editToggle ? "" : "readOnly"}
+          onChange={changeInput}
+        />
       </S.FlexBox>
       <S.FlexBox>
         <S.Text>Discription: </S.Text>
         <S.Description
-          value={description}
+          name="description"
+          value={profileData.description}
           readOnly={editToggle ? "" : "readOnly"}
+          onChange={changeInput}
         />
       </S.FlexBox>
-      <S.EditButton onClick={() => setEditToggle((toggle) => !toggle)}>
+      <S.FlexBox>
+        <S.Text>ApiData: </S.Text>
+        <S.Description
+          name="apiData"
+          value={apiDataState}
+          readOnly={editToggle ? "" : "readOnly"}
+          onChange={setInput}
+        />
+      </S.FlexBox>
+      <S.EditButton onClick={() => toggleEdit()}>
         {editToggle ? "save" : "edit"}
       </S.EditButton>
       <S.Text>count: {getCount}</S.Text>

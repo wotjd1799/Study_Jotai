@@ -3,9 +3,9 @@ import RootRouter from "./Route/RootRouter";
 
 function App() {
   return (
-        <div className="App">
-          <RootRouter />
-        </div>
+    <div className="App">
+      <RootRouter />
+    </div>
   );
 }
 

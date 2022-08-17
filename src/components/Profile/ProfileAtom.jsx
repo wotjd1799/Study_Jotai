@@ -1,12 +1,28 @@
 import { atom } from "jotai";
 
-const profileName = atom("이재성");
-const profileDescription = atom(
-  "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
+const profileData = atom({
+  name: "Local에서 지정한 Data 1",
+  //만약 description이 api로 받아온 값이라면?
+  description: "Local에서 지정한 Data 2",
+});
+
+const profileData2 = atom("Api에서 받아온 Data 입니다.");
+
+export const setApiDataAtom = atom(
+  (get) => get(profileData2),
+  (get, set, update) => {
+    set(profileData2, update)
+  }
 );
 
-export const profileAtom = atom((get) => ({
-  name: get(profileName),
-  description: get(profileDescription),
-}));
+export const changeDataAtom = atom(
+  (get) => get(profileData),
+  (get, set, update) => {
+    const data = {
+      ...get(profileData),
+      [update.targetName]: update.data,
+    };
 
+    set(profileData, data);
+  }
+);

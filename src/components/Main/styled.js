@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 export const Title = styled.div`
   width: 100%;
   border: solid 1px black;
-  height: 50px;
+  height: 70px;
   margin-bottom: 200px;
   display: flex;
   justify-content: space-between;
